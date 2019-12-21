@@ -8,7 +8,19 @@ const data = {
     outPath: './fonts/',
 }
 
-const cssLink = 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500&display=swap&subset=cyrillic,cyrillic-ext';
+const argv = require('yargs')
+    .usage('Usage: $0 -s [str]')
+    .demandOption(['s'])
+    .alias('s', 'source')
+    .nargs('s', 1)
+    .string((['s']))
+    .describe('s', 'Link to Goggle Fonts css file')
+    .help('h')
+    .alias('h', 'help')
+    .argv;
+
+const cssLink = argv.source;
+// const cssLink = 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500&display=swap&subset=cyrillic,cyrillic-ext';
 // const agent = new httpsProxyAgent('http://login:password@192.168.0.1:3128/');
 
 fs.access(data.outPath, fs.constants.F_OK, (err: Error) => err && fs.mkdirSync(data.outPath));

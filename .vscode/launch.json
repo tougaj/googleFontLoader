@@ -12,6 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\dist\\load.js",
+            "args": ["-s", "https://fonts.googleapis.com/css?family=Roboto:400,400i,500&display=swap&subset=cyrillic,cyrillic-ext"]
             // "outFiles": [
             //     "${workspaceFolder}/**/*.js"
             // ]
