@@ -7,6 +7,21 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program with proxy",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\dist\\load.js",
+            "args": [
+                "-s",
+                "https://fonts.googleapis.com/css?family=Roboto:400,400i,500&display=swap&subset=cyrillic,cyrillic-ext",
+                "-p",
+                "http://login:password@192.168.0.1:3128/"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Запустить программу",
             "skipFiles": [
                 "<node_internals>/**"
