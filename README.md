@@ -13,7 +13,8 @@ Options:
   -p, --proxy       Proxy configuration in format
                     http://login:password@address:port/                 [string]
   -a, --user-agent  User agent                                          [string]
-  -h, --help        Show help                                          [boolean]```
+  -h, --help        Show help                                          [boolean]
+  ```
 
 Например:
 
