@@ -8,32 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const httpsProxyAgent = require('https-proxy-agent');
-const data = {
-    headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'
-    },
-    outPath: './fonts',
-};
-const argv = require('yargs')
-    .usage('Usage: $0 -s [str] -p [str]')
-    .demandOption(['s'])
-    .alias('s', 'source')
-    .nargs('s', 1)
-    .string((['s', 'p']))
-    .describe('s', 'Link to Goggle Fonts css file')
-    .alias('p', 'proxy')
-    .nargs('p', 1)
-    .describe('p', 'Proxy configuration in format http://login:password@address:port/')
-    .help('h')
-    .alias('h', 'help')
-    .argv;
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
+const httpsProxyAgent = require("https-proxy-agent");
+const argv = require("yargs")
+    .usage("Usage: node .\\dist\\$0 -s [str] -p [str] -a[str]")
+    .demandOption(["s"])
+    .alias("s", "source")
+    .nargs("s", 1)
+    .string(["s", "p", "a"])
+    .describe("s", "Link to Goggle Fonts css file")
+    .alias("p", "proxy")
+    .nargs("p", 1)
+    .describe("p", "Proxy configuration in format http://login:password@address:port/")
+    .alias("a", "user-agent")
+    .nargs("a", 1)
+    .describe("a", "User agent")
+    .help("h")
+    .alias("h", "help").argv;
 const cssLink = argv.source;
 const proxyAddress = argv.proxy;
-const agent = proxyAddress ? new httpsProxyAgent(proxyAddress) : undefined;
+const proxyAgent = proxyAddress ? new httpsProxyAgent(proxyAddress) : undefined;
+const _userAgent = argv.userAgent;
+const data = {
+    headers: {
+        "User-Agent": _userAgent
+            ? _userAgent
+            : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+    },
+    outPath: "./fonts"
+};
 const outPath = data.outPath;
 const removeOldFonts = (directory) => {
     fs.readdir(directory, (err, files) => {
@@ -50,16 +55,16 @@ const removeOldFonts = (directory) => {
 const getFontsLinks = (cssLink) => {
     return new Promise((resolve, reject) => {
         axios({
-            method: 'get',
+            method: "get",
             url: cssLink,
-            responseType: 'text',
+            responseType: "text",
             headers: data.headers,
-            httpsAgent: agent,
+            httpsAgent: proxyAgent
         })
             .then((response) => response.data)
             .then((text) => {
-            fs.writeFileSync(path.join(outPath, 'style.css'), text.replace(/https:\/\/fonts.gstatic.com[^)]+\/([^/)]+)/ig, '$1'));
-            const re = new RegExp(/url\((https:\/\/fonts\.[^)]+)\)/ig);
+            fs.writeFileSync(path.join(outPath, "style.css"), text.replace(/https:\/\/fonts.gstatic.com[^)]+\/([^/)]+)/gi, "$1"));
+            const re = new RegExp(/url\((https:\/\/fonts\.[^)]+)\)/gi);
             const fontLinks = [];
             let ar;
             while ((ar = re.exec(text)) !== null) {
@@ -78,15 +83,13 @@ const loadFont = (link) => {
         }
         const fileName = m[1];
         axios({
-            method: 'get',
+            method: "get",
             url: link,
-            responseType: 'stream',
+            responseType: "stream",
             headers: data.headers,
-            httpsAgent: agent,
-        })
-            .then((response) => {
-            response.data.pipe(fs.createWriteStream(path.join(outPath, fileName))
-                .on('finish', () => {
+            httpsAgent: proxyAgent
+        }).then((response) => {
+            response.data.pipe(fs.createWriteStream(path.join(outPath, fileName)).on("finish", () => {
                 resolve(`${fileName} loaded`);
             }));
         });
@@ -99,7 +102,7 @@ const loadFonts = (fontLinks) => __awaiter(void 0, void 0, void 0, function* () 
         const result = yield loadFont(link);
         console.log(result);
     }
-    return 'All fonts loaded';
+    return "All fonts loaded";
 });
 fs.access(outPath, fs.constants.F_OK, (err) => {
     if (err) {
