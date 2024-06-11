@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@types/node": "^12.20.25",
 		"@types/yargs": "^13.0.12",
-		"gulp": "^4.0.2",
+		"gulp": "^5.0.0",
 		"gulp-changed": "^4.0.3",
 		"gulp-typescript": "^6.0.0-alpha.1",
 		"typescript": "^3.9.10"
